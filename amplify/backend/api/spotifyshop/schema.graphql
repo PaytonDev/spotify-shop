@@ -1,0 +1,94 @@
+type AlbumCategory @model {
+  id: ID!
+  title: String!
+  albums: [Album] @connection(keyName: "byAlbumCategory", fields: ["id"])
+}
+
+type Album @model @key(name: "byAlbumCategory", fields: ["albumCategoryId"]) {
+  id: ID!
+  name: String!
+  by: [Artist] @connection(keyName: "byAlbum", fields:["id"])
+  imageUri: String!
+  aritistHeadline: String!
+  songs: [Song] @connection(keyName: "byAlbum", fields: ["id"])
+  albumCategoryId: ID!
+  AlbumCategory: AlbumCategory @connection(fields:["albumCategoryId"])
+}
+
+type Song @model @key(name: "byAlbum", fields: ["albumId"]) {
+  id: ID!
+  imageUri: String!
+  title: String!
+  Artist: String!
+  albumId: ID!
+  Album: Album @connection(fields: ["albumId"])
+}
+
+type Artist @model @key(name:"byAlbum", fields:["albumId"]) {
+  id: ID!
+  name: String!
+  avatar: String!
+  merch: [Merch] @connection(keyName: "byArtist", fields: ["id"])
+  tour: [Tour] @connection(keyName: "byArtist", fields: ["id"])
+  podcast: [Podcast] @connection(keyName: "byArtist", fields: ["id"])
+  social: [Social] @connection(keyName: "byArtist", fields: ["id"])
+  albumId:ID!
+  album: Album @connection(fields:["albumId"])
+}
+
+type Merch @model @key(name: "byArtist", fields:["artistId"]) {
+  id: ID!
+  itemName: String!
+  image:String!
+  price: Float!
+  sourceName: String!
+  sourceURI: String!
+  artistId: ID!
+  artist: Artist @connection(fields: ["artistId"])
+}
+
+type Tour @model @key(name: "byArtist", fields: ["artistId"]) {
+  id: ID!
+  onTour: Boolean!
+  tourDates: [TourDates] @connection(keyName: "byTour", fields:["id"])
+  artistId: ID!
+  artist: Artist @connection(fields: ["artistId"])
+}
+
+type TourDates @model @key(name: "byTour", fields:["tourId"]) {
+  id: ID!
+  dateMonth: String!
+  dateDate: String!
+  dateDay:String!
+  dateTime: String!
+  city: String!
+  venue: String!
+  tourId: ID!
+  tour: Tour @connection(fields: ["tourId"])
+}
+
+type Podcast @model @key(name: "byArtist", fields: ["artistId"]) {
+  id: ID!
+  onTour: Boolean!
+  featPodcast: [FeatPodcast] @connection(keyName: "byPodcast", fields:["id"])
+  artistId: ID!
+  artist: Artist @connection(fields: ["artistId"])
+}
+
+type FeatPodcast @model @key(name:"byPodcast", fields:["podcastId"]) {
+  id: ID!
+  showName: String!
+  episodeName: String!
+  image: String!
+  podcastId: ID!
+  podcast: Podcast @connection(fields: ["podcastId"])
+}
+
+type Social @model @key(name: "byArtist", fields: ["artistId"]) {
+  id: ID!
+  source: String!
+  message: String!
+  image: String!
+  artistId: ID!
+  artist: Artist @connection(fields: ["artistId"])
+}
